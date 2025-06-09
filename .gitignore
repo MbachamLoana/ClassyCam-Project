@@ -1,0 +1,31 @@
+# .gitignore
+
+# Python virtual environment
+venv/
+.venv/  # Common alternative name for virtual env
+
+# Python bytecode
+*.pyc
+__pycache__/
+
+# Dependencies (if you have Node.js frontend)
+node_modules/
+
+# Environment variables files
+.env
+.flaskenv
+
+# Editor files
+.vscode/
+.idea/
+
+# Operating System files
+.DS_Store
+Thumbs.db
+
+# Build artifacts (if you build your frontend)
+dist/
+build/
+
+# Other temporary files
+*.log
