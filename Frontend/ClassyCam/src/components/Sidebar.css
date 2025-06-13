@@ -1,0 +1,48 @@
+/* Sidebar Styles */
+.sidebar {
+    width: 250px;
+    background-color: var(--secondary-black);
+    padding: 2rem 1rem;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid var(--medium-gray);
+  }
+  
+  .sidebar-logo {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 2rem;
+    padding: 0 1rem;
+  }
+  
+  .sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.8rem 1rem;
+    border-radius: 8px;
+    color: var(--light-gray);
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+  
+  .nav-item:hover {
+    background-color: var(--dark-gray);
+    color: white;
+  }
+  
+  .nav-item.active {
+    background: linear-gradient(90deg, rgba(255, 77, 109, 0.2), transparent);
+    color: var(--primary-pink);
+    border-left: 3px solid var(--primary-pink);
+  }
+  
+  .nav-item svg {
+    font-size: 1.1rem;
+  }

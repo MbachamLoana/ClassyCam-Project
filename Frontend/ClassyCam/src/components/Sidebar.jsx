@@ -1,48 +1,59 @@
-import React from 'react';
+// src/components/Sidebar.jsx
+import { NavLink } from 'react-router-dom';
+import { 
+  FaHome, FaVideo, FaChartLine, FaBell, FaCog, FaSignOutAlt 
+} from 'react-icons/fa';
+import { motion } from 'framer-motion';
+// src/components/Sidebar.jsx
+import Logo from './Logo';
 
-const Sidebar = ({ activeTab, setActiveTab, onLogout }) => {
+// Inside Sidebar component
+<div className="sidebar-header">
+  <Logo size="medium" />
+</div>
+
+const Sidebar = () => {
   return (
-    <div className="w-64 bg-white shadow-lg">
-      <div className="p-6 border-b">
-        <h1 className="text-xl font-bold text-indigo-700">Classroom Surveillance</h1>
+    <motion.div 
+      className="sidebar"
+      initial={{ x: -20, opacity: 0 }}
+      animate={{ x: 0, opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
+      <div className="sidebar-header">
+        <h1>Classy<span>Cam</span></h1>
       </div>
       
-      <nav className="mt-6">
-        <button
-          className={`w-full text-left px-6 py-3 flex items-center ${
-            activeTab === 'monitor' 
-              ? 'bg-indigo-50 text-indigo-700 border-l-4 border-indigo-700' 
-              : 'text-gray-600 hover:bg-gray-50'
-          }`}
-          onClick={() => setActiveTab('monitor')}
-        >
-          <span className="mr-3">📹</span>
-          Classroom Monitoring
-        </button>
-        
-        <button
-          className={`w-full text-left px-6 py-3 flex items-center ${
-            activeTab === 'reports' 
-              ? 'bg-indigo-50 text-indigo-700 border-l-4 border-indigo-700' 
-              : 'text-gray-600 hover:bg-gray-50'
-          }`}
-          onClick={() => setActiveTab('reports')}
-        >
-          <span className="mr-3">📊</span>
-          Reports
-        </button>
+      <nav className="sidebar-nav">
+        <NavLink to="/dashboard" className="nav-item">
+          <FaHome />
+          <span>Dashboard</span>
+        </NavLink>
+        <NavLink to="/live" className="nav-item">
+          <FaVideo />
+          <span>Live Feed</span>
+        </NavLink>
+        <NavLink to="/analytics" className="nav-item">
+          <FaChartLine />
+          <span>Analytics</span>
+        </NavLink>
+        <NavLink to="/alerts" className="nav-item">
+          <FaBell />
+          <span>Alerts</span>
+        </NavLink>
+        <NavLink to="/settings" className="nav-item">
+          <FaCog />
+          <span>Settings</span>
+        </NavLink>
       </nav>
       
-      <div className="absolute bottom-0 w-64 p-4 border-t">
-        <button
-          className="w-full flex items-center text-gray-600 hover:text-red-500"
-          onClick={onLogout}
-        >
-          <span className="mr-3">🚪</span>
-          Logout
+      <div className="sidebar-footer">
+        <button className="logout-btn">
+          <FaSignOutAlt />
+          <span>Logout</span>
         </button>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
