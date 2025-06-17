@@ -9,20 +9,7 @@ import {
   FaArrowRight
 } from 'react-icons/fa';
 import { RiDashboardFill } from 'react-icons/ri';
-// src/pages/Onboarding.jsx
-// ... existing imports ...
 import Logo from '../components/Logo';
-
-
-  return (
-    <motion.div className="onboarding-container">
-      <header className="onboarding-header">
-        <Logo size="large" />
-        <p className="app-tagline">Intelligent Classroom Surveillance System</p>
-      </header>
-      {/* ... rest of onboarding page ... */}
-    </motion.div>
-  );
 
 const Onboarding = () => {
   const navigate = useNavigate();
@@ -43,15 +30,7 @@ const Onboarding = () => {
       
       {/* Header with beautiful logo */}
       <header className="onboarding-header">
-        <div className="logo-container">
-          <div className="app-logo">
-            <RiDashboardFill className="logo-icon" />
-            <div className="logo-text">
-              <span className="logo-primary">Classy</span>
-              <span className="logo-secondary">Cam</span>
-            </div>
-          </div>
-        </div>
+        <Logo size="large" />
         <p className="app-tagline">Intelligent Classroom Surveillance System</p>
       </header>
 

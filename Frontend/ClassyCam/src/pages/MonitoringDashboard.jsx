@@ -1,50 +1,47 @@
-// src/pages/Dashboard.jsx
+// src/pages/MonitoringDashboard.jsx
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import VideoPlayer from '../components/VideoPlayer';
 import { 
   FaVideo, FaVideoSlash, FaRecordVinyl, FaPlay, FaStop,
   FaBell, FaChartBar, FaUserGraduate, FaRunning, FaHistory,
-  FaCog, FaRegClock, FaSignOutAlt, FaSearch 
+  FaCog, FaRegClock, FaSignOutAlt, FaSearch, FaArrowLeft
 } from 'react-icons/fa';
-import { BsGraphUp, BsCameraVideoFill, BsActivity, BsThreeDotsVertical } from 'react-icons/bs';
+import { BsGraphUp, BsCameraVideoFill, BsActivity } from 'react-icons/bs';
 import { IoMdAlert } from 'react-icons/io';
-import { RiLiveFill } from 'react-icons/ri';
 import { motion, AnimatePresence } from 'framer-motion';
 import { signOut } from 'firebase/auth';
 import { auth } from '../firebase';
-// src/pages/Dashboard.jsx
-// ... existing imports ...
 import Logo from '../components/Logo';
+import { useParams } from 'react-router-dom';
 
 
-  return (
-    <div className="dashboard-container">
-      <Sidebar />
-      <div className="dashboard-content">
-        <header className="dashboard-header">
-          <div className="header-left">
-            <Logo size="medium" />
-            <h1>Dashboard</h1>
-            {/* ... rest of header ... */}
-          </div>
-        </header>
-        {/* ... dashboard content ... */}
-      </div>
-    </div>
-  );
-
-const Dashboard = () => {
+const MonitoringDashboard = () => {
+  const location = useLocation();
   const navigate = useNavigate();
+  const classInfo = location.state?.classInfo || { 
+    id: 1, 
+    name: 'Mathematics 101', 
+    code: 'MATH101', 
+    students: 24 
+  };
+
+  const fullClassInfo = {
+    students: 0,
+    alerts: 0,
+    ...classInfo
+  };
+  
+  
   const [isStreaming, setIsStreaming] = useState(true);
   const [isRecording, setIsRecording] = useState(false);
-  const [activeTab, setActiveTab] = useState('live');
-  const [alerts, setAlerts] = useState([
+  const [alerts] = useState([
     { id: 1, type: 'movement', message: 'Unusual movement detected in back row', time: '2 mins ago', severity: 'medium' },
     { id: 2, type: 'behavior', message: 'Potential distraction detected', time: '5 mins ago', severity: 'low' },
     { id: 3, type: 'alert', message: 'Student raised hand for question', time: '8 mins ago', severity: 'info' }
   ]);
+  
   const [behaviorStats, setBehaviorStats] = useState({
     attentive: 82,
     distracted: 12,
@@ -87,16 +84,31 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard-container">
+      
       <Sidebar />
       
       <div className="dashboard-content">
-        {/* Header */}
         <header className="dashboard-header">
           <div className="header-left">
-            <h1>Classy<span>Cam</span> Dashboard</h1>
+            <Logo size="medium" />
+            <div>
+              <button 
+                onClick={() => navigate('/dashboard')}
+                className="flex items-center text-indigo-600 mb-1"
+              >
+                <FaArrowLeft className="mr-2" /> Back to Classes
+              </button>
+              <h1 className="text-xl font-bold">
+                Monitoring: <span className="text-indigo-600">{classInfo.name}</span>
+              </h1>
+            </div>
             <div className="search-bar">
               <FaSearch className="search-icon" />
-              <input type="text" placeholder="Search classrooms..." />
+              <input 
+                type="text" 
+                placeholder="Search students..." 
+                autoComplete="off"
+              />
             </div>
           </div>
           <div className="header-right">
@@ -110,9 +122,7 @@ const Dashboard = () => {
           </div>
         </header>
 
-        {/* Main Content */}
         <div className="dashboard-grid">
-          {/* Video Feed Card */}
           <motion.div 
             className={`video-card ${isStreaming ? 'active' : 'inactive'}`}
             initial={{ opacity: 0 }}
@@ -120,7 +130,7 @@ const Dashboard = () => {
             transition={{ duration: 0.5 }}
           >
             <div className="card-header">
-              <h3><BsCameraVideoFill /> Classroom Live Feed</h3>
+              <h3><BsCameraVideoFill /> {classInfo.name} Live Feed</h3>
               <div className="card-actions">
                 <motion.button
                   className={`control-btn ${isStreaming ? 'streaming' : ''}`}
@@ -144,7 +154,6 @@ const Dashboard = () => {
             <VideoPlayer isStreaming={isStreaming} />
           </motion.div>
 
-          {/* Behavior Analytics Card */}
           <motion.div 
             className="analytics-card"
             initial={{ opacity: 0 }}
@@ -200,7 +209,6 @@ const Dashboard = () => {
             </div>
           </motion.div>
 
-          {/* Alerts Card */}
           <motion.div 
             className="alerts-card"
             initial={{ opacity: 0 }}
@@ -238,7 +246,6 @@ const Dashboard = () => {
             </div>
           </motion.div>
 
-          {/* Recordings Card */}
           <motion.div 
             className="recordings-card"
             initial={{ opacity: 0 }}
@@ -274,4 +281,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default MonitoringDashboard;

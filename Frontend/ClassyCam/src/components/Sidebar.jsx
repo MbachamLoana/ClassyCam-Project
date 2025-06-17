@@ -1,59 +1,64 @@
-// src/components/Sidebar.jsx
-import { NavLink } from 'react-router-dom';
+import React from 'react';
 import { 
-  FaHome, FaVideo, FaChartLine, FaBell, FaCog, FaSignOutAlt 
+  FaVideo, 
+  FaUserShield, 
+  FaChartLine,
+  FaCog,
+  FaUserCircle,
+  FaSignOutAlt
 } from 'react-icons/fa';
-import { motion } from 'framer-motion';
-// src/components/Sidebar.jsx
 import Logo from './Logo';
-
-// Inside Sidebar component
-<div className="sidebar-header">
-  <Logo size="medium" />
-</div>
 
 const Sidebar = () => {
   return (
-    <motion.div 
-      className="sidebar"
-      initial={{ x: -20, opacity: 0 }}
-      animate={{ x: 0, opacity: 1 }}
-      transition={{ duration: 0.5 }}
-    >
+    <aside className="dashboard-sidebar">
       <div className="sidebar-header">
-        <h1>Classy<span>Cam</span></h1>
+        <Logo size="medium" />
+        <h2>ClassyCam</h2>
       </div>
       
-      <nav className="sidebar-nav">
-        <NavLink to="/dashboard" className="nav-item">
-          <FaHome />
-          <span>Dashboard</span>
-        </NavLink>
-        <NavLink to="/live" className="nav-item">
-          <FaVideo />
-          <span>Live Feed</span>
-        </NavLink>
-        <NavLink to="/analytics" className="nav-item">
-          <FaChartLine />
-          <span>Analytics</span>
-        </NavLink>
-        <NavLink to="/alerts" className="nav-item">
-          <FaBell />
-          <span>Alerts</span>
-        </NavLink>
-        <NavLink to="/settings" className="nav-item">
-          <FaCog />
-          <span>Settings</span>
-        </NavLink>
-      </nav>
+      <div className="sidebar-nav">
+        <ul>
+          <li className="active">
+            <a href="#">
+              <span className="nav-icon"><FaVideo /></span>
+              <span>Live Monitoring</span>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <span className="nav-icon"><FaUserShield /></span>
+              <span>Security Dashboard</span>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <span className="nav-icon"><FaChartLine /></span>
+              <span>Analytics</span>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <span className="nav-icon"><FaCog /></span>
+              <span>Settings</span>
+            </a>
+          </li>
+        </ul>
+      </div>
       
       <div className="sidebar-footer">
-        <button className="logout-btn">
-          <FaSignOutAlt />
-          <span>Logout</span>
-        </button>
+        <div className="user-profile">
+          <FaUserCircle className="user-avatar" />
+          <div className="user-info">
+            <p className="user-name">Admin User</p>
+            <p className="user-role">Administrator</p>
+          </div>
+          <button className="logout-btn">
+            <FaSignOutAlt />
+          </button>
+        </div>
       </div>
-    </motion.div>
+    </aside>
   );
 };
 

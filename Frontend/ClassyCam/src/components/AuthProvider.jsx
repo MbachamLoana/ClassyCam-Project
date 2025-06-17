@@ -1,21 +1,22 @@
 // src/components/AuthProvider.jsx
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { onAuthStateChanged } from 'firebase/auth';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { auth } from '../firebase';
+import { onAuthStateChanged } from 'firebase/auth';
 
 const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (!user) {
+      if (!user && location.pathname !== '/login' && location.pathname !== '/signup') {
         navigate('/login');
       }
     });
 
-    return () => unsubscribe();
-  }, [navigate]);
+    return unsubscribe;
+  }, [navigate, location]);
 
   return children;
 };
