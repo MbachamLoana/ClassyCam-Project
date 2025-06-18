@@ -39,7 +39,7 @@ async def generate_frames(rtsp_url: str):
     Generator function to open an RTSP stream using OpenCV,
     read frames, encode them as JPEG, and yield them for MJPEG streaming.
     """
-    cap = cv2.VideoCapture(rtsp_url) # Attempt to open the RTSP stream
+    cap = cv2.VideoCapture(0) # Attempt to open the RTSP stream
 
     # Check if the video capture object was successfully opened
     if not cap.isOpened():
