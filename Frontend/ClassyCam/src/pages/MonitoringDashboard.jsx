@@ -2,8 +2,8 @@
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
-import VideoPlayer from '../components/VideoPlayer';
-import { 
+import ImageStreamViewer from "../components/ImageStreamViewer"; // Correct path to the component
+import {
   FaVideo, FaVideoSlash, FaRecordVinyl, FaPlay, FaStop,
   FaBell, FaChartBar, FaUserGraduate, FaRunning, FaHistory,
   FaCog, FaRegClock, FaSignOutAlt, FaSearch, FaArrowLeft
@@ -14,34 +14,33 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { signOut } from 'firebase/auth';
 import { auth } from '../firebase';
 import Logo from '../components/Logo';
-import { useParams } from 'react-router-dom';
+// Removed unused import: import { useParams } from 'react-router-router-dom';
 
 
 const MonitoringDashboard = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const classInfo = location.state?.classInfo || { 
-    id: 1, 
-    name: 'Mathematics 101', 
-    code: 'MATH101', 
-    students: 24 
+  const classInfo = location.state?.classInfo || {
+    id: 1,
+    name: 'Mathematics 101',
+    code: 'MATH101',
+    students: 24
   };
 
-  const fullClassInfo = {
-    students: 0,
-    alerts: 0,
-    ...classInfo
-  };
-  
-  
-  const [isStreaming, setIsStreaming] = useState(true);
+  // State for streaming and recording
+  const [isStreaming, setIsStreaming] = useState(false); // Default to false, stream starts on connect
   const [isRecording, setIsRecording] = useState(false);
+
+  // New state for the RTSP URL input and the backend stream URL
+  const [rtspInputUrl, setRtspInputUrl] = useState('');
+  const [backendStreamUrl, setBackendStreamUrl] = useState(null); // URL to the backend's MJPEG stream
+
   const [alerts] = useState([
     { id: 1, type: 'movement', message: 'Unusual movement detected in back row', time: '2 mins ago', severity: 'medium' },
     { id: 2, type: 'behavior', message: 'Potential distraction detected', time: '5 mins ago', severity: 'low' },
     { id: 3, type: 'alert', message: 'Student raised hand for question', time: '8 mins ago', severity: 'info' }
   ]);
-  
+
   const [behaviorStats, setBehaviorStats] = useState({
     attentive: 82,
     distracted: 12,
@@ -57,16 +56,44 @@ const MonitoringDashboard = () => {
     }
   };
 
-  const toggleStreaming = () => {
-    setIsStreaming(!isStreaming);
-    if (isRecording && !isStreaming) {
-      setTimeout(() => setIsRecording(false), 300);
+  // --- START: Corrected Streaming Logic (Connect/Stop) ---
+  const handleConnectStream = async () => {
+    const trimmedRtspUrl = rtspInputUrl.trim();
+    if (!trimmedRtspUrl) {
+      alert("Please enter an RTSP URL.");
+      return;
     }
+
+    // Encode the RTSP URL to safely pass it as part of the query parameter
+    const encodedRtspUrl = encodeURIComponent(trimmedRtspUrl);
+    const backendUrl = `http://localhost:8000/stream?rtsp_url=${encodedRtspUrl}`; // Your FastAPI endpoint
+
+    setBackendStreamUrl(backendUrl);
+    setIsStreaming(true); // Indicate that we are trying to stream from the backend
+    console.log('Attempting to connect to backend stream:', backendUrl);
   };
 
+  const handleStopStream = () => {
+    setBackendStreamUrl(null); // Clear the stream URL, effectively stopping the image stream
+    setIsStreaming(false);
+    setIsRecording(false); // Stop recording if stream stops
+    console.log('Backend stream stopped.');
+  };
+  // --- END: Corrected Streaming Logic ---
+
   const toggleRecording = () => {
-    if (isStreaming) {
+    if (isStreaming) { // Can only record if a stream is active
       setIsRecording(!isRecording);
+      // In a real application, you would send a command to your backend
+      // to start/stop recording the proxied stream.
+      if (!isRecording) {
+        console.log('Recording started on backend (simulated)...');
+      } else {
+        console.log('Recording stopped on backend (simulated)...');
+      }
+    } else {
+      console.warn('Cannot start recording: No active stream.');
+      alert('Please connect to a stream before recording.');
     }
   };
 
@@ -84,15 +111,15 @@ const MonitoringDashboard = () => {
 
   return (
     <div className="dashboard-container">
-      
+
       <Sidebar />
-      
+
       <div className="dashboard-content">
         <header className="dashboard-header">
           <div className="header-left">
             <Logo size="medium" />
             <div>
-              <button 
+              <button
                 onClick={() => navigate('/dashboard')}
                 className="flex items-center text-indigo-600 mb-1"
               >
@@ -104,9 +131,9 @@ const MonitoringDashboard = () => {
             </div>
             <div className="search-bar">
               <FaSearch className="search-icon" />
-              <input 
-                type="text" 
-                placeholder="Search students..." 
+              <input
+                type="text"
+                placeholder="Search students..."
                 autoComplete="off"
               />
             </div>
@@ -123,7 +150,7 @@ const MonitoringDashboard = () => {
         </header>
 
         <div className="dashboard-grid">
-          <motion.div 
+          <motion.div
             className={`video-card ${isStreaming ? 'active' : 'inactive'}`}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -132,13 +159,22 @@ const MonitoringDashboard = () => {
             <div className="card-header">
               <h3><BsCameraVideoFill /> {classInfo.name} Live Feed</h3>
               <div className="card-actions">
+                {/* RTSP Input Field and Connect Button */}
+                <input
+                  type="text"
+                  placeholder="Enter RTSP URL (e.g., rtsp://IP:port/stream.sdp)"
+                  value={rtspInputUrl}
+                  onChange={(e) => setRtspInputUrl(e.target.value)}
+                  className="rtsp-input"
+                  style={{ flexGrow: 1, marginRight: '10px', padding: '8px', borderRadius: '5px', border: '1px solid #ccc' }} // Basic inline styling for layout
+                />
                 <motion.button
                   className={`control-btn ${isStreaming ? 'streaming' : ''}`}
-                  onClick={toggleStreaming}
+                  onClick={isStreaming ? handleStopStream : handleConnectStream}
                   whileHover={{ scale: 1.05 }}
                 >
                   {isStreaming ? <FaVideoSlash /> : <FaVideo />}
-                  {isStreaming ? 'Stop Stream' : 'Start Stream'}
+                  {isStreaming ? 'Stop Stream' : 'Connect Stream'}
                 </motion.button>
                 <motion.button
                   className={`control-btn ${isRecording ? 'recording' : ''}`}
@@ -151,10 +187,11 @@ const MonitoringDashboard = () => {
                 </motion.button>
               </div>
             </div>
-            <VideoPlayer isStreaming={isStreaming} />
+            {/* THIS IS THE CORRECTED COMPONENT USAGE */}
+            <ImageStreamViewer isStreaming={isStreaming} streamSrc={backendStreamUrl} />
           </motion.div>
 
-          <motion.div 
+          <motion.div
             className="analytics-card"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -196,7 +233,7 @@ const MonitoringDashboard = () => {
                     </AnimatePresence>
                   </div>
                   <div className="metric-bar">
-                    <motion.div 
+                    <motion.div
                       className="bar-fill"
                       initial={{ width: 0 }}
                       animate={{ width: `${metric.value}%` }}
@@ -209,7 +246,7 @@ const MonitoringDashboard = () => {
             </div>
           </motion.div>
 
-          <motion.div 
+          <motion.div
             className="alerts-card"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -232,8 +269,8 @@ const MonitoringDashboard = () => {
                     whileHover={{ x: 5 }}
                   >
                     <div className="alert-icon">
-                      {alert.type === 'movement' ? <FaRunning /> : 
-                       alert.type === 'behavior' ? <FaUserGraduate /> : 
+                      {alert.type === 'movement' ? <FaRunning /> :
+                       alert.type === 'behavior' ? <FaUserGraduate /> :
                        <IoMdAlert />}
                     </div>
                     <div className="alert-content">
@@ -246,7 +283,7 @@ const MonitoringDashboard = () => {
             </div>
           </motion.div>
 
-          <motion.div 
+          <motion.div
             className="recordings-card"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -258,7 +295,7 @@ const MonitoringDashboard = () => {
             </div>
             <div className="recordings-list">
               {[1, 2, 3].map((item) => (
-                <motion.div 
+                <motion.div
                   className="recording-item"
                   key={item}
                   whileHover={{ scale: 1.02 }}

@@ -1,69 +1,92 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
+import { motion } from 'framer-motion';
 
-const LiveStream = ({ classroom }) => {
+const LiveStream = () => {
+  const [rtspUrl, setRtspUrl] = useState('');
+  const [isStreaming, setIsStreaming] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [streamUrl, setStreamUrl] = useState('');
+  const [error, setError] = useState('');
+  const videoRef = useRef(null);
 
-  useEffect(() => {
-    if (classroom) {
-      setIsLoading(true);
-      // Simulate stream loading
-      setTimeout(() => {
-        // In real implementation, this would be the MJPEG endpoint from your backend
-        // Example: `http://your-backend/stream/${classroom.id}/mjpeg`
-        setStreamUrl('https://via.placeholder.com/800x450?text=Live+Stream+Placeholder');
-        setIsLoading(false);
-      }, 1000);
+  const handleConnect = async () => {
+    if (!rtspUrl) return;
+    
+    setIsLoading(true);
+    setError('');
+    
+    try {
+      // Send RTSP URL to backend
+      const response = await fetch('http://localhost:5000/set-rtsp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: rtspUrl })
+      });
+      
+      if (!response.ok) throw new Error('Failed to connect to camera');
+      
+      setIsStreaming(true);
+      
+      // Start displaying the MJPEG stream
+      if (videoRef.current) {
+        videoRef.current.src = 'http://localhost:5000/video-stream';
+      }
+    } catch (err) {
+      setError(err.message || 'Connection failed');
+    } finally {
+      setIsLoading(false);
     }
-  }, [classroom]);
-
-  if (!classroom) {
-    return (
-      <div className="text-center py-12">
-        <p className="text-gray-500">Please select or create a classroom to view the stream</p>
-      </div>
-    );
-  }
+  };
 
   return (
-    <div>
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-bold">Live Stream: {classroom.name}</h2>
-        <span className="bg-red-500 text-white px-2 py-1 rounded text-sm">LIVE</span>
+    <div className="live-stream-container">
+      <div className="stream-controls">
+        <input
+          type="text"
+          value={rtspUrl}
+          onChange={(e) => setRtspUrl(e.target.value)}
+          placeholder="rtsp://username:password@ip:port/stream"
+          className="rtsp-input"
+        />
+        
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={handleConnect}
+          disabled={isLoading || !rtspUrl}
+          className="connect-btn"
+        >
+          {isLoading ? (
+            <span>Connecting...</span>
+          ) : isStreaming ? (
+            <span>Streaming</span>
+          ) : (
+            <span>Connect to Video Stream</span>
+          )}
+        </motion.button>
       </div>
       
-      {isLoading ? (
-        <div className="flex justify-center items-center h-64 bg-gray-100 rounded-md">
-          <p>Loading stream...</p>
-        </div>
-      ) : (
-        <div className="relative">
-          {/* MJPEG stream via img tag */}
-          <img 
-            src={streamUrl} 
-            alt={`Live stream of ${classroom.name}`}
-            className="w-full h-auto rounded-md border"
-          />
-          
-          <div className="absolute bottom-4 left-4 bg-black bg-opacity-50 text-white p-2 rounded">
-            Classroom: {classroom.code} | Status: Active
-          </div>
-        </div>
-      )}
+      {error && <div className="error-message">{error}</div>}
       
-      <div className="mt-4 grid grid-cols-3 gap-4">
-        <div className="bg-indigo-50 p-3 rounded-md">
-          <p className="text-sm text-gray-500">Detection Status</p>
-          <p className="font-bold">Active</p>
-        </div>
-        <div className="bg-indigo-50 p-3 rounded-md">
-          <p className="text-sm text-gray-500">Objects Detected</p>
-          <p className="font-bold">Students: 25</p>
-        </div>
-        <div className="bg-indigo-50 p-3 rounded-md">
-          <p className="text-sm text-gray-500">Last Alert</p>
-          <p className="font-bold">2 min ago</p>
-        </div>
+      <div className="video-container">
+        {isStreaming ? (
+          <img 
+            ref={videoRef} 
+            alt="Live Stream" 
+            className="video-feed"
+          />
+        ) : (
+          <div className="stream-placeholder">
+            <div className="placeholder-content">
+              <div className="camera-icon">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                  <path d="M20 4h-3.17l-1.24-1.35A1.99 1.99 0 0 0 14.12 2H9.88c-.56 0-1.1.24-1.48.65L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-8 13c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/>
+                </svg>
+              </div>
+              <p>Enter RTSP URL and click "Connect to Video Stream"</p>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
