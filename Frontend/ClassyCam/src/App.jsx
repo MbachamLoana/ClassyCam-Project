@@ -7,6 +7,7 @@ import Login from './pages/Login';
 import InitialDashboard from './pages/InitialDashboard';
 import MonitoringDashboard from './pages/MonitoringDashboard';
 import ForgotPassword from './pages/ForgotPassword';
+import Video from './pages/Video';
 import './App.css';
 
 const App = () => {
@@ -17,6 +18,7 @@ const App = () => {
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/video" element={<Video />} />
         
         {/* Protected Routes */}
         <Route path="/dashboard" element={<InitialDashboard />} />

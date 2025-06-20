@@ -1,0 +1,273 @@
+/* Video.css */
+.video-container {
+ 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding: 1.5rem 1rem;
+   
+  }
+  
+  .video-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    color: #2d3748;
+  }
+  
+  .video-header div {
+    font-size:20px;
+    font-weight: 600;
+    margin: 0;
+  }
+  .header-icon {
+    color: #4c51bf;
+  }
+  
+  .group {
+    display: flex;
+    align-items: center;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    gap:2rem
+  }
+  
+  /* .connection-card {
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  } */
+  
+  .connection-instructions {
+    display: flex;
+    gap: 0.75rem;
+    background-color: #f0f5ff;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    color: #4a5568;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    
+  }
+  
+  .info-icon {
+    color: #3182ce;
+    flex-shrink: 0;
+    margin-top: 0.2rem;
+  }
+  
+  .input-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #4a5568;
+    font-size: 0.95rem;
+  }
+  
+  .label-icon {
+    color: #4c51bf;
+  }
+  
+  .input-wrapper {
+    display: flex;
+    border: 1px solid #cbd5e0;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+    width: 800px;
+  }
+  
+  .input-wrapper:focus-within {
+    border-color: #4c51bf;
+    box-shadow: 0 0 0 1px #4c51bf;
+  }
+  
+  .rtsp-input {
+    flex: 1;
+    padding: 0.6rem 1rem;
+    width:800px;
+    border: none;
+    border-bottom: 1px transparent;
+    outline: none;
+    font-size: 0.95rem;
+    color: #2d3748;
+  }
+  
+  input[type="text"], input[type="file"] {
+    width: 100%;
+    padding: 15px 20px;
+    font-size: 16px;
+    border: 2px solid transparent;
+    border-bottom: 1px solid transparent;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease;
+    outline: none;
+  }
+  
+  .rtsp-input::placeholder {
+    color: #a0aec0;
+  }
+  
+  .connect-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0 1.25rem;
+    background-color: #4c51bf;
+    color: white;
+    border: none;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .connect-button:hover {
+    background-color: #434190;
+  }
+  
+  .connection-tips {
+    background-color: #f8fafc;
+    padding: 1rem;
+    border-radius: 8px;
+    border-left: 3px solid #4c51bf;
+    margin-top: 1rem;
+    margin-left: 4rem;
+  }
+  
+  .connection-tips h4 {
+    margin-top: 0;
+    margin-bottom: 0.75rem;
+    color: #2d3748;
+    font-size: 1rem;
+  }
+  
+  .connection-tips ul {
+    margin: 0;
+    padding-left: 1.25rem;
+    color: #4a5568;
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+  
+  .connection-tips li {
+    margin-bottom: 0.25rem;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 640px) {
+    .input-wrapper {
+      flex-direction: column;
+      border: none;
+      gap: 0.75rem;
+    }
+    
+    .rtsp-input {
+      border: 1px solid #cbd5e0;
+      border-radius: 6px;
+      width: 100%;
+    }
+    
+    .connect-button {
+      width: 100%;
+      justify-content: center;
+      padding: 0.75rem;
+      border-radius: 6px;
+    }
+  }
+  
+  .no-surveillance {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 300px;
+    width: 100%;
+    color: #6c757d;
+    text-align: center;
+    padding: 20px;
+  }
+  
+  .no-surveillance-icon {
+    margin-bottom: 16px;
+    color: #adb5bd;
+  }
+  
+  .no-surveillance-subtext {
+    font-size: 14px;
+    margin-top: 8px;
+    color: #adb5bd;
+  }
+  
+  .spin {
+    animation: spin 1s linear infinite;
+    margin-right: 8px;
+  }
+  
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
+  .connect-button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+  
+  img{
+    width: 840px;
+  }
+  
+  /* Add these to your existing Video.css */
+  .analysis-controls {
+    margin: 15px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .analysis-button {
+    padding: 8px 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 14px;
+    transition: background-color 0.3s;
+  }
+  
+  .analysis-button:hover:not(:disabled) {
+    background-color: #45a049;
+  }
+  
+  .analysis-button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+  }
+  
+  .analysis-button.active {
+    background-color: #2196F3;
+  }
+  
+  .analysis-button.active:hover {
+    background-color: #0b7dda;
+  }
+  
+  .analysis-note {
+    font-size: 13px;
+    color: #666;
+    padding: 8px;
+    background-color: #f8f8f8;
+    border-radius: 4px;
+    border-left: 3px solid #2196F3;
+  }
